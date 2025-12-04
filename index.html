@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth cursor-none">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KATIE B | The Icon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Grand+Hotel&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syncopate:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- EXTREME DESIGN SYSTEM --- */
+        :root {
+            --neon-pink: #ff00ff;
+            --deep-black: #000000;
+            --blood-red: #ff0000;
+            --acid-green: #ccff00;
+            --off-white: #f0f0f0;
+        }
+
+        body {
+            background-color: var(--deep-black);
+            color: var(--off-white);
+            font-family: 'Space Mono', monospace;
+            overflow-x: hidden;
+        }
+
+        /* Typography */
+        .font-display { font-family: 'Syncopate', sans-serif; }
+        .font-script { font-family: 'Grand Hotel', cursive; }
+
+        /* --- CUSTOM CURSOR --- */
+        .cursor-dot,
+        .cursor-outline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--neon-pink);
+            box-shadow: 0 0 10px var(--neon-pink);
+        }
+
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--neon-pink);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+            mix-blend-mode: difference;
+        }
+
+        body:hover .cursor-outline {
+            width: 80px;
+            height: 80px;
+            background-color: rgba(255, 0, 255, 0.2);
+            border-color: var(--acid-green);
+            animation: pulse-cursor 1s infinite;
+        }
+        
+        @keyframes pulse-cursor {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* --- MOVING CRT SCANLINE EFFECT --- */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.3) 50%,
+                rgba(0,0,0,0.3)
+            );
+            background-size: 100% 4px;
+            z-index: 9998;
+            pointer-events: none;
+            opacity: 0.4;
+            animation: scanline-move 0.5s linear infinite;
+        }
+        
+        @keyframes scanline-move {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 8px; }
+        }
+
+        /* --- ANIMATIONS --- */
+        
+        /* 1. 3D Scroll Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px) rotateX(10deg);
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0) rotateX(0);
+        }
+
+        /* 2. Extreme Glitch Text */
+        .glitch-aggressive {
+            position: relative;
+        }
+        .glitch-aggressive::before,
+        .glitch-aggressive::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.8;
+        }
+        .glitch-aggressive:hover::before {
+            color: var(--blood-red);
+            animation: glitch-anim-1 0.1s infinite linear alternate-reverse;
+            z-index: -1;
+            transform: translate(-4px, 0);
+        }
+        .glitch-aggressive:hover::after {
+            color: var(--acid-green);
+            animation: glitch-anim-2 0.1s infinite linear alternate-reverse;
+            z-index: -2;
+            transform: translate(4px, 0);
+        }
+
+        @keyframes glitch-anim-1 {
+            0% { clip-path: inset(20% 0 80% 0); }
+            100% { clip-path: inset(50% 0 10% 0); }
+        }
+        @keyframes glitch-anim-2 {
+            0% { clip-path: inset(10% 0 50% 0); }
+            100% { clip-path: inset(80% 0 20% 0); }
+        }
+
+        /* 3. RGB Split & Invert Image Hover */
+        .rgb-hover-container {
+            position: relative;
+            overflow: hidden;
+            background: #000;
+        }
+        .rgb-hover-container img {
+            transition: transform 0.2s, filter 0.1s;
+            mix-blend-mode: normal;
+        }
+        .rgb-hover-container:hover img {
+            animation: rgb-shake 0.3s infinite;
+            filter: invert(1) contrast(150%); /* Extreme inversion */
+        }
+        
+        @keyframes rgb-shake {
+            0% { transform: translate(2px, 2px); }
+            25% { transform: translate(-2px, -2px); }
+            50% { transform: translate(-2px, 2px); }
+            75% { transform: translate(2px, -2px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        /* 4. Marquee */
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+        }
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 10s linear infinite; /* Faster */
+        }
+        .marquee-content:hover {
+            animation-play-state: paused;
+            color: var(--acid-green);
+            text-shadow: 2px 2px var(--neon-pink);
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* 5. Button Neon Slide & Shake */
+        .btn-neon {
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-weight: 900;
+        }
+        .btn-neon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--neon-pink);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+            z-index: -1;
+        }
+        .btn-neon:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        .btn-neon:hover {
+            color: black;
+            box-shadow: 0 0 20px var(--neon-pink);
+            animation: shake-hard 0.4s infinite;
+        }
+
+        @keyframes shake-hard {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(2deg); }
+            50% { transform: rotate(-2deg); }
+            75% { transform: rotate(1deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        /* 6. Static Noise Overlay for Video */
+        .static-noise {
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+            opacity: 0.4;
+            mix-blend-mode: overlay;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .group:hover .static-noise {
+            opacity: 0;
+        }
+
+        /* Noise Texture Overlay (Global) */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9997;
+            opacity: 0.08;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+        }
+        
+        /* Nav Link Hover */
+        .nav-link {
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .nav-link:hover {
+            letter-spacing: 0.5em;
+            color: var(--acid-green);
+            text-shadow: 0 0 10px var(--acid-green);
+        }
+
+        /* PHYSICS CANVAS */
+        canvas {
+            touch-action: none; /* Prevents scrolling when dragging items on mobile */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <div class="noise-overlay"></div>
+    <div class="scanlines"></div>
+
+    <nav class="fixed top-0 w-full z-50 mix-blend-difference text-white py-6 px-8 flex justify-between items-center backdrop-blur-sm border-b border-white/10">
+        <div class="text-3xl font-bold font-display tracking-tighter hover:text-pink-500 transition-colors cursor-pointer hover:scale-110 hover:rotate-3 active:scale-95 transition-transform" onclick="document.body.classList.toggle('invert')">
+            KB<span class="text-pink-500">.</span>
+        </div>
+        <div class="hidden md:flex gap-8 text-sm tracking-widest uppercase font-bold">
+            <a href="#tribute" class="nav-link">Tribute</a>
+            <a href="#about" class="nav-link">About</a>
+            <a href="#book" class="nav-link">Book</a>
+            <a href="#media" class="nav-link">Media</a>
+            <a href="#bernie-pit" class="nav-link text-acid-green">Bernies</a>
+        </div>
+        <a href="#book" class="px-6 py-2 border-2 border-white hover:bg-white hover:text-black transition-all text-xs uppercase tracking-widest font-black btn-neon">
+            Get The Book
+        </a>
+    </nav>
+
+    <header class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden group">
+        <div class="absolute inset-0 z-0 scale-110 group-hover:scale-100 transition duration-[2s]">
+            <img src="IMG_1341.JPG" alt="Katie B Hero" class="w-full h-full object-cover opacity-60 filter grayscale group-hover:grayscale-0 transition duration-[2s]">
+            <div class="absolute inset-0 bg-gradient-to-b from-black via-black/50 to-black"></div>
+            <div class="absolute inset-0 bg-pink-500/10 mix-blend-overlay animate-pulse"></div>
+        </div>
+
+        <div class="container mx-auto px-4 z-10 text-center flex flex-col items-center">
+            
+            <p class="reveal font-script text-5xl md:text-7xl text-pink-500 mb-6 transform -rotate-6 drop-shadow-[0_0_10px_rgba(255,105,180,0.8)] hover:scale-125 transition-transform duration-300">
+                Happy Birthday
+            </p>
+
+            <h1 class="font-display text-[15vw] leading-[0.75] font-black uppercase tracking-tighter mix-blend-difference opacity-100 mb-8 glitch-aggressive text-white transition-all hover:scale-105 hover:skew-x-12" data-text="KATIE B">
+                KATIE B
+            </h1>
+
+            <div class="reveal delay-200 w-full bg-pink-600/20 border-y-2 border-pink-500 py-4 mb-12 backdrop-blur-md transform -skew-x-12 hover:skew-x-0 transition-transform duration-500">
+                <div class="marquee-container">
+                    <div class="marquee-content font-display font-bold uppercase tracking-[0.5em] text-sm md:text-lg">
+                        Dancer <span class="text-pink-500 mx-4">///</span> Singer <span class="text-pink-500 mx-4">///</span> Writer <span class="text-pink-500 mx-4">///</span> Icon <span class="text-pink-500 mx-4">///</span> The Moment <span class="text-pink-500 mx-4">///</span> Dancer <span class="text-pink-500 mx-4">///</span> Singer <span class="text-pink-500 mx-4">///</span> Writer <span class="text-pink-500 mx-4">///</span> Icon <span class="text-pink-500 mx-4">///</span> The Moment <span class="text-pink-500 mx-4">///</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reveal delay-300 flex flex-col md:flex-row gap-6">
+                <a href="#media" class="btn-neon px-12 py-5 border-2 border-white text-white uppercase tracking-widest text-lg font-bold backdrop-blur-md">
+                    Watch Content
+                </a>
+                <a href="#book" class="btn-neon px-12 py-5 border-2 border-red-600 text-red-500 uppercase tracking-widest text-lg font-bold backdrop-blur-md hover:text-black hover:border-pink-500">
+                    The Novel
+                </a>
+            </div>
+        </div>
+
+
+    </header>
+
+    <section id="tribute" class="py-20 bg-zinc-900 border-y-8 border-acid-green relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10" style="background-image: repeating-linear-gradient(45deg, #000 0, #000 10px, #ccff00 10px, #ccff00 20px);"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-4xl mx-auto bg-black border-4 border-white p-8 md:p-12 shadow-[20px_20px_0_#ff00ff] transform -rotate-1 hover:rotate-0 transition-transform duration-500">
+                <div class="flex items-center gap-4 mb-6 border-b border-gray-700 pb-4">
+                     <div class="w-4 h-4 bg-red-500 rounded-full animate-pulse"></div>
+                     <h3 class="font-mono text-acid-green uppercase tracking-widest">/// Incoming Transmission: Caleb Smith</h3>
+                </div>
+                
+                <p class="font-display text-xl md:text-2xl leading-relaxed uppercase text-white mb-6">
+                    "Not only is Katie B. a truly talented person, but she leaves an impression that people never forget. She is compassionate, loving, humble, sweet, gorgeous, reliable, and hilarious. She is truly one of a kind—<span class="text-pink-500 font-black">ICONIC</span>."
+                </p>
+                
+                <p class="font-mono text-gray-400 text-sm md:text-base mb-6">
+                   I’ve had the privilege of watching her grow into the powerful, resilient, and gracious woman she is today, spanning from her love of Bob Duncan to her passion for documentary work on aquatic apes.
+
+I first met Katie in 8th grade Spanish class through Andrew Garcia, and I’ll never forget her singing 'We finish each other's sandwiches!' to make me laugh. But a core memory for me will always be 9th grade, when she dropped the perfect Bob Duncan joke that sealed our friendship.
+
+I really got to know her when I invited her to my 15th birthday party. I was such an odd, weird kid back then—making jokes about 'Kale the Queefer'—but Katie was so open to getting to know me, just as I was to her. She has always been there to listen to me babble about my issues, offering her presence and feedback without a shred of judgment. She keeps you guessing, radiates excitement, and is simply the best.
+                </p>
+
+    
+                
+                <div class="flex justify-between items-end">
+                    <div class="font-script text-4xl text-pink-500 transform -rotate-6">Happy Birthday, Katie</div>
+                    <div class="text-right font-bold uppercase tracking-widest text-white border-2 border-white px-4 py-2">
+                        End Log
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="py-24 bg-black relative">
+        <div class="absolute top-0 right-0 w-1/2 h-full bg-zinc-900/20 skew-x-12 pointer-events-none"></div>
+
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 reveal border-b-4 border-white pb-8">
+                <h2 class="font-display text-6xl md:text-9xl font-black uppercase text-white leading-none hover:text-pink-500 transition-colors duration-300">
+                    The <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-red-500 to-purple-600 animate-pulse">Icon</span>
+                </h2>
+                <p class="mt-4 md:mt-0 text-right max-w-sm text-gray-400 font-mono text-xs uppercase tracking-widest">
+                    /// SYSTEM STATUS: LEGENDARY<br>
+                    /// MOOD: ONLY THE BEST<br>
+                    /// LOCATION: THE EDGE
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 grid-rows-4 gap-6 h-[150vh] md:h-[900px]">
+                
+                <div class="reveal md:col-span-2 md:row-span-4 border-4 border-white/20 hover:border-pink-500 rgb-hover-container group transition-all duration-300">
+                    <img src="IMG_1345.JPG" class="w-full h-full object-cover grayscale contrast-125" alt="Katie Portrait">
+                    <div class="absolute bottom-0 left-0 w-full p-8 bg-gradient-to-t from-black via-black/80 to-transparent">
+                        <h3 class="font-script text-6xl text-pink-500 drop-shadow-[2px_2px_0_#fff]">Always Serving</h3>
+                    </div>
+                    <div class="absolute inset-0 bg-pink-500/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-100"></div>
+                </div>
+
+                <div class="reveal md:col-span-2 md:row-span-2 bg-pink-600 p-8 flex flex-col justify-center relative overflow-hidden group hover:bg-black hover:border-acid-green transition-all duration-300 border-4 border-pink-600">
+                    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20"></div>
+                    <i class="fas fa-quote-left text-8xl mb-4 text-black opacity-20 absolute top-4 right-4 group-hover:text-acid-green group-hover:opacity-100 transition-all"></i>
+                    <p class="text-2xl md:text-4xl font-black leading-tight relative z-10 uppercase font-display italic group-hover:text-acid-green transition-colors">
+                        "We finish eachothers <span class="bg-black text-white px-2 group-hover:bg-acid-green group-hover:text-black">sandwiches</span>."
+                    </p>
+                    <div class="absolute -left-10 -bottom-10 text-[10rem] opacity-20 font-display font-black group-hover:translate-x-10 transition duration-500 text-black group-hover:text-acid-green">KB</div>
+                </div>
+
+                <div class="reveal md:col-span-1 md:row-span-2 bg-zinc-900 border-4 border-white/20 p-6 flex flex-col justify-between hover:border-acid-green hover:bg-zinc-800 transition-all duration-300 group hover:rotate-3">
+                    <div class="text-gray-500 uppercase text-xs tracking-widest font-mono group-hover:text-acid-green">Est.</div>
+                    <div class="text-7xl font-display font-black text-white group-hover:text-acid-green glitch-aggressive" data-text="2000">2000</div>
+                    <div class="text-white text-sm uppercase font-bold bg-black inline-block p-2 self-start">Legend Status</div>
+                </div>
+
+                <div class="reveal md:col-span-1 md:row-span-2 bg-gray-800 rgb-hover-container border-4 border-white/20 hover:border-white">
+                    <img src="IMG_1343.JPG" class="w-full h-full object-cover" alt="Vibe">
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="book" class="py-32 bg-black relative border-y-8 border-red-900 overflow-hidden">
+        <div class="absolute inset-0 overflow-hidden pointer-events-none opacity-10 select-none">
+            <div class="text-[20vw] leading-none font-black font-display text-red-600 whitespace-nowrap absolute top-10 left-0 animate-pulse">FACES FACES</div>
+            <div class="text-[20vw] leading-none font-black font-display text-white whitespace-nowrap absolute bottom-10 right-0 mix-blend-overlay">THE WALL</div>
+        </div>
+
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                <div class="reveal order-2 md:order-1 flex justify-center perspective-1000">
+                    <div class="relative w-3/4 md:w-2/3 aspect-[2/3] group transform hover:rotate-y-12 transition duration-700 preserve-3d">
+                        <div class="absolute top-4 left-4 w-full h-full border-4 border-red-600 z-0 transition-transform group-hover:translate-x-6 group-hover:translate-y-6"></div>
+                        <div class="absolute top-0 left-0 w-full h-full bg-gray-900 z-10 overflow-hidden shadow-[0_0_50px_rgba(255,0,0,0.5)] border-2 border-white">
+                             <img src="images.jpg" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition duration-500 grayscale group-hover:grayscale-0 group-hover:scale-110" alt="The Faces in the Wall">
+                             <div class="absolute bottom-12 left-0 w-full text-center px-4">
+                                 <h3 class="text-white font-display text-2xl bg-red-900/80 backdrop-blur-md py-4 border-y border-white group-hover:bg-red-600 group-hover:text-black transition-colors">THE FACES IN THE WALL</h3>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reveal order-1 md:order-2 text-right">
+                    <span class="inline-block bg-red-600 text-black font-black tracking-widest uppercase text-sm mb-6 px-4 py-1 animate-pulse">
+                        /// AVAILABLE NOW ///
+                    </span>
+                    <h2 class="text-6xl md:text-8xl font-display font-black mb-6 text-white uppercase leading-[0.8] hover:skew-x-6 transition-transform">
+                        The Faces <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-l from-red-600 to-white">In The Wall</span>
+                    </h2>
+                    <p class="text-xl text-gray-300 mb-10 font-mono leading-relaxed border-r-4 border-red-600 pr-6 ml-auto max-w-lg">
+                        A literary journey into the fractured psyche. Where the paint peels, the truth reveals itself. 
+                        Critics are calling it <span class="text-red-500 font-bold">"Hauntingly beautiful"</span> and <span class="text-red-500 font-bold">"Unapologetically raw."</span>
+                    </p>
+                    
+                    <a href="https://en.wikipedia.org/wiki/Barack_Obama" target="_blank" class="btn-neon px-8 py-4 bg-red-700 text-white font-bold uppercase tracking-widest hover:bg-red-600 transition shadow-[4px_4px_0_white] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] inline-block text-center">
+    Buy The Book
+</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="media" class="py-24 bg-zinc-900 relative">
+        <div class="absolute inset-0 bg-[linear-gradient(45deg,#000_25%,transparent_25%,transparent_75%,#000_75%,#000),linear-gradient(45deg,#000_25%,transparent_25%,transparent_75%,#000_75%,#000)] bg-[length:20px_20px] bg-[position:0_0,10px_10px] opacity-20"></div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="flex items-center justify-between mb-16 reveal border-b-4 border-pink-500 pb-4">
+                <h2 class="font-display text-5xl md:text-7xl font-black uppercase hover:tracking-widest transition-all duration-500">
+                    On <span class="text-pink-500 stroke-text">Screen</span>
+                </h2>
+                <div class="flex gap-2 items-center bg-black px-4 py-2 border border-pink-500 hover:bg-pink-500 hover:text-black transition-colors">
+                    <div class="w-3 h-3 bg-red-500 rounded-full animate-ping"></div>
+                    <span class="text-xs uppercase tracking-widest font-bold">Live Feed /// REC</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="reveal bg-black p-2 border-2 border-white/20 hover:border-pink-500 transition-all duration-300 group hover:-translate-y-4 shadow-[8px_8px_0_#ff00ff]">
+                    <div class="relative aspect-video overflow-hidden border border-white/10 bg-gray-900">
+                        <iframe class="w-full h-full absolute inset-0 grayscale contrast-125 group-hover:grayscale-0 transition duration-500 relative z-10" src="https://www.youtube.com/embed/htKTHegUsSY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        <div class="static-noise z-20"></div>
+                    </div>
+                    <div class="p-4 flex justify-between items-center bg-zinc-900 border-t border-white/10 mt-2">
+                        <span class="font-mono text-xs text-pink-500 font-bold group-hover:text-acid-green">/// 001 </span>
+                        <i class="fas fa-play text-white group-hover:text-pink-500 transition text-xl group-hover:rotate-180 duration-300"></i>
+                    </div>
+                </div>
+
+                <div class="reveal bg-black p-2 border-2 border-white/20 hover:border-pink-500 transition-all duration-300 group hover:-translate-y-4 shadow-[8px_8px_0_#ff00ff] delay-100">
+                    <div class="relative aspect-video overflow-hidden border border-white/10 bg-gray-900">
+                        <iframe class="w-full h-full absolute inset-0 grayscale contrast-125 group-hover:grayscale-0 transition duration-500 relative z-10" src="https://www.youtube.com/embed/IeTLuPPfrjc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        <div class="static-noise z-20"></div>
+                    </div>
+                    <div class="p-4 flex justify-between items-center bg-zinc-900 border-t border-white/10 mt-2">
+                        <span class="font-mono text-xs text-pink-500 font-bold group-hover:text-acid-green">/// 002 </span>
+                        <i class="fas fa-play text-white group-hover:text-pink-500 transition text-xl group-hover:rotate-180 duration-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="gallery" class="py-24 bg-black">
+        <div class="container mx-auto px-4">
+            
+            <div class="w-full text-center mb-16">
+                <h2 class="font-display text-5xl md:text-8xl font-black uppercase reveal text-white inline-block">
+                    Visual <span class="text-transparent bg-clip-text bg-gradient-to-t from-pink-600 to-white decoration-wavy underline underline-offset-8 decoration-pink-500 hover:text-acid-green transition-colors">Noise</span>
+                </h2>
+            </div>
+
+            <div class="columns-1 md:columns-3 gap-8 space-y-8">
+                <div class="reveal break-inside-avoid relative group overflow-hidden border-4 border-white hover:border-acid-green transition-all duration-300 rgb-hover-container">
+                    <img src="13c7acf1f7dc69588adf2f334115f237.jpg" class="w-full filter grayscale contrast-150 group-hover:grayscale-0 transition duration-500" alt="Gallery">
+                </div>
+                
+                <div class="reveal break-inside-avoid relative group overflow-hidden border-4 border-white hover:border-acid-green transition-all duration-300 rgb-hover-container">
+                    <img src="IMG_1344.JPG" class="w-full filter sepia contrast-125 group-hover:sepia-0 transition duration-500" alt="Gallery">
+                </div>
+
+                <div class="reveal break-inside-avoid relative group overflow-hidden border-4 border-white hover:border-acid-green transition-all duration-300 rgb-hover-container">
+                    <img src="image000001.JPG" class="w-full filter grayscale contrast-125 group-hover:grayscale-0 transition duration-500" alt="Gallery">
+                </div>
+
+                <div class="reveal break-inside-avoid relative group overflow-hidden border-4 border-white hover:border-acid-green transition-all duration-300 rgb-hover-container">
+                    <img src="IMG_0947.jpg" class="w-full filter contrast-150 brightness-75 group-hover:brightness-100 transition duration-500" alt="Gallery">
+                </div>
+
+                <div class="reveal break-inside-avoid relative group overflow-hidden border-4 border-white hover:border-acid-green transition-all duration-300 rgb-hover-container">
+                    <img src="images.webp" class="w-full filter grayscale contrast-150 group-hover:grayscale-0 transition duration-500" alt="Gallery">
+                </div>
+                
+                <div class="reveal break-inside-avoid relative group overflow-hidden border-4 border-white hover:border-acid-green transition-all duration-300 rgb-hover-container">
+                    <img src="IMG_1342.JPG" class="w-full filter grayscale contrast-150 group-hover:grayscale-0 transition duration-500" alt="Gallery">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="bernie-pit" class="py-24 bg-zinc-900 border-t-8 border-acid-green relative overflow-hidden">
+        <div class="container mx-auto px-4 relative z-10 flex flex-col items-center">
+            
+            <div class="text-center mb-10">
+                <h2 class="font-display text-4xl md:text-6xl font-black uppercase text-acid-green mb-4 glitch-aggressive" data-text="THE BERNIE PIT">
+                    THE BERNIE PIT
+                </h2>
+                <p class="font-mono text-pink-500 text-sm md:text-base uppercase tracking-widest bg-black px-4 py-2 inline-block border border-pink-500">
+                    /// INTERACTIVE ZONE: DRAG & THROW ///
+                </p>
+                <div class="mt-4 font-script text-3xl text-white">
+                    Est. 2000 <span class="text-xs font-mono uppercase text-gray-400 ml-2 tracking-widest">| KATIE B SUPREMACY</span>
+                </div>
+                <p class="text-xs text-gray-500 mt-2">(Scroll locked when inside the box)</p>
+            </div>
+
+            <div id="bernie-game" class="w-full max-w-5xl h-[600px] border-4 border-acid-green shadow-[0_0_30px_rgba(204,255,0,0.3)] relative bg-black cursor-grab active:cursor-grabbing overflow-hidden">
+                </div>
+
+            <div class="mt-8 flex gap-4">
+                <button onclick="resetBernies()" class="px-6 py-2 border border-white text-white font-mono text-xs uppercase hover:bg-white hover:text-black transition">
+                    Reset Pit
+                </button>
+                <button onclick="addBernieRain()" class="px-6 py-2 border border-acid-green text-acid-green font-mono text-xs uppercase hover:bg-acid-green hover:text-black transition animate-pulse">
+                    Make it Rain
+                </button>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="bg-black border-t-8 border-pink-500 py-16 relative overflow-hidden">
+        <div class="absolute inset-0 bg-zinc-900/50 pointer-events-none"></div>
+        <div class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-8 relative z-10">
+            <div class="text-left">
+                <h3 class="font-display text-5xl font-black text-white mb-2 glitch-aggressive hover:text-acid-green transition-colors" data-text="KATIE B.">KATIE B.</h3>
+                <p class="text-gray-500 text-sm font-mono uppercase tracking-widest">© 2025 All Rights Reserved /// SYSTEM END</p>
+            </div>
+            
+            <div class="flex gap-6">
+                 <a href="https://www.instagram.com/suck_my_401k/" class="text-white hover:text-pink-500 text-2xl transition"><i class="fab fa-instagram"></i></a>
+                 <a href="https://www.youtube.com/watch?v=htKTHegUsSY&t=5s" class="text-white hover:text-pink-500 text-2xl transition"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 1. CUSTOM CURSOR LOGIC
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+
+        window.addEventListener('mousemove', function(e) {
+            const posX = e.clientX;
+            const posY = e.clientY;
+
+            // Simple dot moves instantly
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+
+            // Outline moves with lag for fluid effect
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+
+        // 2. SCROLL REVEAL LOGIC
+        window.addEventListener('scroll', reveal);
+        function reveal() {
+            var reveals = document.querySelectorAll('.reveal');
+            for(var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var revealTop = reveals[i].getBoundingClientRect().top;
+                var revealPoint = 150;
+
+                if(revealTop < windowHeight - revealPoint) {
+                    reveals[i].classList.add('active');
+                }
+            }
+        }
+        // Trigger once on load
+        reveal();
+
+        // 3. MATTER.JS PHYSICS GAME (THE BERNIE PIT)
+        const initMatter = () => {
+            const Engine = Matter.Engine,
+                  Render = Matter.Render,
+                  Runner = Matter.Runner,
+                  World = Matter.World,
+                  Bodies = Matter.Bodies,
+                  Mouse = Matter.Mouse,
+                  MouseConstraint = Matter.MouseConstraint,
+                  Composite = Matter.Composite;
+
+            const engine = Engine.create();
+            const world = engine.world;
+            
+            const container = document.getElementById('bernie-game');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            // Create Renderer
+            const render = Render.create({
+                element: container,
+                engine: engine,
+                options: {
+                    width: width,
+                    height: height,
+                    background: '#000000',
+                    wireframes: false
+                }
+            });
+
+            Render.run(render);
+            const runner = Runner.create();
+            Runner.run(runner, engine);
+
+            // Create Walls
+            const wallOptions = { isStatic: true, render: { fillStyle: '#ccff00' } };
+            const ground = Bodies.rectangle(width/2, height + 30, width, 60, wallOptions);
+            const leftWall = Bodies.rectangle(-30, height/2, 60, height, wallOptions);
+            const rightWall = Bodies.rectangle(width + 30, height/2, 60, height, wallOptions);
+            
+            World.add(world, [ground, leftWall, rightWall]);
+
+            // ==========================================
+            //  IMAGE REPLACEMENT LOGIC HERE
+            // ==========================================
+            window.addBernieRain = function() {
+                for(let i=0; i<5; i++) {
+                    const x = Math.random() * (width - 100) + 50;
+                    
+                    // We use a circle body because heads roll better
+                    const body = Bodies.circle(x, -100 - (i*150), 40, { // 40 is the radius
+                        restitution: 0.8, // Bounciness
+                        angle: Math.random() * Math.PI,
+                        render: {
+                            sprite: {
+                                // ----------------------------------------------------
+                                // MAKE SURE 'bernie.png' IS IN YOUR FOLDER
+                                texture: 'bernie.png', 
+                                // ----------------------------------------------------
+                                
+                                // IF IMAGE IS TOO BIG/SMALL, CHANGE THESE NUMBERS
+                                // 1.0 = Original Size, 0.5 = Half Size, etc.
+                                xScale: 0.5, 
+                                yScale: 0.5
+                            }
+                        }
+                    });
+                    
+                    World.add(world, body);
+                }
+            };
+            
+            // Initial Rain
+            window.addBernieRain();
+
+            // Clear Function
+            window.resetBernies = function() {
+                Composite.clear(world, false);
+                World.add(world, [ground, leftWall, rightWall]);
+                window.addBernieRain();
+            };
+
+            // MOUSE CONTROL
+            const mouse = Mouse.create(render.canvas);
+            const mouseConstraint = MouseConstraint.create(engine, {
+                mouse: mouse,
+                constraint: {
+                    stiffness: 0.2,
+                    render: { visible: false }
+                }
+            });
+
+            World.add(world, mouseConstraint);
+            render.mouse = mouse;
+
+            // --- THE SCROLL FIX ---
+            render.canvas.addEventListener('wheel', function(e) {
+                e.preventDefault();
+            }, { passive: false });
+
+            // Handle Resize
+            window.addEventListener('resize', function() {
+                render.canvas.width = container.clientWidth;
+                render.canvas.height = container.clientHeight;
+            });
+        };
+
+        // Initialize Game
+        initMatter();
+
+    </script>
+</body>
+</html>
